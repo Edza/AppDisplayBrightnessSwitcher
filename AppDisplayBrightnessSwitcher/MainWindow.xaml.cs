@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace AppDisplayBrightnessSwitcher
     /// </summary>
     public partial class MainWindow : Window
     {
-        Timer t;
+        Timer t, t2;
         private int br;
 
         public MainWindow()
@@ -31,10 +32,27 @@ namespace AppDisplayBrightnessSwitcher
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
+        {    
+            t2 = new Timer(20000);
+            t2.Elapsed += t2_Elapsed;
+            t2.Start();
             t = new Timer(350);
             t.Elapsed += t_Elapsed;
-            t.Start();
+            SetupTimer();
+        }
+
+        void t2_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            SetupTimer();
+        }
+
+        private void SetupTimer()
+        {
+            Process[] pname = Process.GetProcessesByName("devenv");
+            if (pname.Length == 0)
+                t.Stop();
+            else
+                t.Start();
         }
 
         void t_Elapsed(object sender, ElapsedEventArgs e)
@@ -63,18 +81,18 @@ namespace AppDisplayBrightnessSwitcher
         {
             if (!title.Contains("devenv")) // we are in visual studio
             {
-                if (br == 95)
+                if (br == 122)
                     return;
 
-                 Brightness.SetBrightness(115);
-                 br = 95;
+                 Brightness.SetBrightness(122);
+                 br = 122;
             }
             else
             {
                 if (br == 200)
                     return;
 
-                Brightness.SetBrightness(195);
+                Brightness.SetBrightness(200);
                 br = 200;
             }
         }
